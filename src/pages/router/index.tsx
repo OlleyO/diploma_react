@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ProductPage, loadProductData } from "../ProductPage";
+import { loadFilterData, loadProductData } from "../../api/req";
+import { ProductPage } from "../ProductPage";
 import { MainApp } from "../main";
-import { loadFilterData } from "../MainTable";
 
 const router = createBrowserRouter([
   {
