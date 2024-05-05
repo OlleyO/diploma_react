@@ -4,19 +4,6 @@ import { supabase } from "../../api";
 import { Button } from "../../components/button";
 import { Modal } from "../../components/modal";
 import styles from "./styles.module.scss";
-
-interface ProductId {
-  params: {
-    id: string;
-  };
-}
-
-interface Product {
-  id: string;
-  name: string;
-  phone: string;
-}
-
 const fetchProductData = async (id: string) => {
   const { data } = await supabase.from("Models").select().eq("id", id);
 
@@ -34,7 +21,7 @@ export const ProductPage = () => {
   const [isCountOpen, setIsCountOpen] = useState<boolean>(false);
   const [sellCount, setSellCount] = useState<string | null>(null);
 
-  const uptadeCount = async (id: string, count: number) =>
+  const updateCount = async (id: string, count: number) =>
       await supabase.rpc("sell_items", {
         model_id_to_delete: id,
         count_to_delete: count,
@@ -49,7 +36,7 @@ export const ProductPage = () => {
   useEffect(() => {
     if (sellCount && isCountOpen) {
       setIsCountOpen(false);
-      uptadeCount(product.id, +(sellCount || 0));
+      updateCount(product.id, +(sellCount || 0));
     }
   }, [sellCount]);
 
