@@ -19,7 +19,6 @@ export const ProductPage = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
   const [isCountOpen, setIsCountOpen] = useState<boolean>(false);
-  const [sellCount, setSellCount] = useState<string | null>(null);
 
   const updateCount = async (id: string, count: number) =>
       await supabase.rpc("sell_items", {
@@ -29,16 +28,11 @@ export const ProductPage = () => {
 
   useEffect(() => {
     if (isCountOpen) {
-      setSellCount(window.prompt("Введіть к-сть товарів для продажу: "));
+      const sellCount = window.prompt("Введіть к-сть товарів для продажу: ");
+      updateCount(product.id, +(sellCount || 0));
+      setIsCountOpen(false);
     }
   }, [isCountOpen]);
-
-  useEffect(() => {
-    if (sellCount && isCountOpen) {
-      setIsCountOpen(false);
-      updateCount(product.id, +(sellCount || 0));
-    }
-  }, [sellCount]);
 
   return (
       <Modal className={styles.infoModal}>
