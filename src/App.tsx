@@ -3,21 +3,20 @@ import { RouterProvider } from "react-router-dom";
 
 import { AuthProvide } from "./helpers/authProvide";
 
+
 import "./App.css";
-
 import router from "./pages/router";
-
 import { Header } from "./components/header";
 
 function App() {
-  return (
-    <div className="App">
-      <AuthProvide>
-        <Header />
-        <RouterProvider router={router} />
-      </AuthProvide>
-    </div>
-  );
+    return (
+        <div className="App">
+            <AuthProvide>
+                <Header />
+                <RouterProvider router={router} />
+            </AuthProvide>
+        </div>
+    );
 }
 
 export default App;
