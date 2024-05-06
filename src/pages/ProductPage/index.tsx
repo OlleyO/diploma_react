@@ -4,6 +4,7 @@ import { supabase } from "../../api";
 import { Button } from "../../components/button";
 import { Modal } from "../../components/modal";
 import styles from "./styles.module.scss";
+import {Database} from "../../api/database.types";
 const fetchProductData = async (id: string) => {
   const { data } = await supabase.from("Models").select().eq("id", id);
 
@@ -18,27 +19,41 @@ export async function loadProductData({ params }: any) {
 export const ProductPage = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
-  const [isCountOpen, setIsCountOpen] = useState<boolean>(false);
-  const [sellCount, setSellCount] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const updateCount = async (id: string, count: number) =>
-      await supabase.rpc("sell_items", {
-        model_id_to_delete: id,
-        count_to_delete: count,
-      });
+  async function getItemsToSell (modelId: string, count: number) {
+      return await supabase.from('Items').select().eq('modelId', modelId).limit(count)
+  }
 
-  useEffect(() => {
-    if (isCountOpen) {
-      setSellCount(window.prompt("Введіть к-сть товарів для продажу: "));
-    }
-  }, [isCountOpen]);
+  async function sellItems (payload: (Database['public']['Tables']['BuyItems']['Insert'])[]) {
+      // TODO: Use trigger to delete items from Items table
+      return Promise.all([
+          supabase.from('BuyItems').insert(payload),
+          supabase.from('Items').delete({count: 'exact'}).eq('modelId', product.id).limit(payload.length).order('id')
+      ])
+  }
 
-  useEffect(() => {
-    if (sellCount && isCountOpen) {
-      setIsCountOpen(false);
-      updateCount(product.id, +(sellCount || 0));
-    }
-  }, [sellCount]);
+  function handleSellClick () {
+      const sellCount = Number(window.prompt("Введіть к-сть товарів для продажу: "));
+
+      if(!sellCount) return
+
+      setLoading(true)
+
+      return getItemsToSell(product.id, sellCount)
+          .then(({data}) => {
+              if(!data?.length) return
+
+              const payload = data.map(i => ({
+                  model_id: i.modelId,
+                  created_at: new Date().toISOString()
+              }))
+
+              return sellItems(payload)
+          })
+          .then(() => {alert('Success Loading')})
+          .finally(() => {setLoading(false)})
+  }
 
   return (
       <Modal className={styles.infoModal}>
@@ -63,9 +78,7 @@ export const ProductPage = () => {
         <div className={styles.buttonGroup}>
           <Button>Закупити</Button>
           <Button
-              onClick={() => {
-                setIsCountOpen(true);
-              }}
+              onClick={handleSellClick}
           >
             Продати
           </Button>
