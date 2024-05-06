@@ -3,37 +3,34 @@ import { Link, useLoaderData } from "react-router-dom";
 import { supabase } from "../../api";
 import { Button } from "../../components/button";
 import { toPicture } from "../../helpers/pictures";
-import { types } from "../../helpers/types";
 import styles from "./styles.module.scss";
 
-const fetchFilterData = async (name: string) => {
-  const type = types(name)
+async function fetchFilterData(name: string) {
+  let query = supabase.from("Models").select("*, Types(name), Items(count)");
 
-  if (!type) {
-    const { data } = await supabase.from("modelinfo").select();
-    return data;
+  if (name) {
+    query = query.filter("Types.name", "eq", name);
   }
 
-  const { data } = await supabase.rpc("get_items_by_type", {
-    type_id: type,
-  });
+  const { data } = await query;
 
-  return data;
-};
+  // TODO: Refactor this line
+  return data?.filter((i) => i.Types);
+}
 
 export async function loadFilterData({ params }: any) {
-  const filteredProducts = await fetchFilterData(params.name);
-  return { filteredProducts };
+  return fetchFilterData(params.name);
 }
 
 export const MainTable = () => {
-  const productsFetchData: any = useLoaderData();
-  const filteredProducts = productsFetchData.filteredProducts;
+  const filteredProducts = useLoaderData() as any;
+
+  console.log(filteredProducts);
 
   return (
-      <div className={cn("container")}>
-        <table className={cn("table table-hover", styles.mainTable)}>
-          <thead>
+    <div className={cn("container")}>
+      <table className={cn("table table-hover", styles.mainTable)}>
+        <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Тип товару</th>
@@ -42,20 +39,24 @@ export const MainTable = () => {
             <th scope="col">Ціна</th>
             <th scope="col">К-сть на складах</th>
           </tr>
-          </thead>
+        </thead>
 
-          <tbody>
-          {(filteredProducts as any[])?.map((item, idx) => {
-            return (
+        <tbody>
+          {filteredProducts.length &&
+            filteredProducts?.map((item: any, idx: any) => {
+              return (
                 <tr key={idx}>
                   <th scope="row">{idx + 1}</th>
                   <td>
-                    <img src={toPicture(item.type_name)} alt={item.type_name} />
+                    <img
+                      src={toPicture(item.Types?.name || "")}
+                      alt={item.Types?.name || ""}
+                    />
                   </td>
-                  <td>{`${item.manufacturer_name} ${item.model_name}`}</td>
-                  <td>${item.sell_price}</td>
-                  <td>${item.stock_price}</td>
-                  <td>{item.total_items} шт</td>
+                  <td>{`${item.manufacturer_name} ${item.name}`}</td>
+                  <td>${item.sellPrice}</td>
+                  <td>${item.stockPrice}</td>
+                  <td>{item.Items[0]?.count || 0} шт</td>
                   <td>
                     <Link to={`/product/${item.id}`}>
                       <Button type="button">Деталі</Button>
@@ -65,10 +66,10 @@ export const MainTable = () => {
                     <Button type="button">Редагувати</Button>
                   </td>
                 </tr>
-            );
-          })}
-          </tbody>
-        </table>
-      </div>
+              );
+            })}
+        </tbody>
+      </table>
+    </div>
   );
 };
