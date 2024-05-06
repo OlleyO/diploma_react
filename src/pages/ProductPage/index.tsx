@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { supabase } from "../../api";
-import { Button } from "../../components/button";
+import Button from 'react-bootstrap/Button';
 import { Modal } from "../../components/modal";
 import styles from "./styles.module.scss";
 import {Database} from "../../api/database.types";
@@ -76,12 +76,8 @@ export const ProductPage = () => {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button>Закупити</Button>
-          <Button
-              onClick={handleSellClick}
-          >
-            Продати
-          </Button>
+          <Button disabled={loading}>Закупити</Button>
+          <Button disabled={loading} onClick={handleSellClick}>Продати</Button>
         </div>
       </Modal>
   );
