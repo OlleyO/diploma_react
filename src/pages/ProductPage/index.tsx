@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { supabase } from "../../api";
-import Button from "react-bootstrap/Button";
-import { Modal } from "../../components/modal";
-import styles from "./styles.module.scss";
+import { Button } from "../../components/button";
+import { Modal as MyModal } from "../../components/modal";
+
 import { Database } from "../../api/database.types";
+import styles from "./styles.module.scss";
+import { BuyModal } from "./buyModal";
+
 const fetchProductData = async (id: string) => {
   const { data } = await supabase.from("Models").select().eq("id", id);
 
@@ -16,19 +19,19 @@ export async function loadProductData({ params }: any) {
   return { product };
 }
 
-export const ProductPage = () => {
+export const ProductPage: React.FC = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
   const [loading, setLoading] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
 
   async function getItemsToSell(modelId: string, count: number) {
     return supabase.from("Items").select().eq("modelId", modelId).limit(count);
   }
 
   async function sellItems(
-    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][],
+    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][]
   ) {
-    // TODO: Use trigger to delete items from Items table
     return Promise.all([
       supabase.from("BuyItems").insert(payload),
       supabase
@@ -42,7 +45,7 @@ export const ProductPage = () => {
 
   function handleSellClick() {
     const sellCount = Number(
-      window.prompt("Введіть к-сть товарів для продажу: "),
+      window.prompt("Введіть к-сть товарів для продажу: ")
     );
 
     if (!sellCount) return;
@@ -61,7 +64,7 @@ export const ProductPage = () => {
         return sellItems(payload);
       })
       .then(() => {
-        alert("Success Loading");
+        alert("Успішний продаж!");
       })
       .finally(() => {
         setLoading(false);
@@ -70,9 +73,10 @@ export const ProductPage = () => {
 
   return (
     <div className={styles.productPage}>
+      <BuyModal show={showBuyModal} onHide={() => setShowBuyModal(false)} />
       <div className={styles.graphs}></div>
 
-      <Modal className={styles.infoModal}>
+      <MyModal className={styles.infoModal}>
         <div className={styles.infoGroup}>
           <div className={styles.headerGroup}>
             <h2>{`${product.manufacturer_name} ${product.name}`}</h2>
@@ -92,12 +96,14 @@ export const ProductPage = () => {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button disabled={loading}>Закупити</Button>
+          <Button disabled={loading} onClick={() => setShowBuyModal(true)}>
+            Закупити
+          </Button>
           <Button disabled={loading} onClick={handleSellClick}>
             Продати
           </Button>
         </div>
-      </Modal>
+      </MyModal>
     </div>
   );
 };

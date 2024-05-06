@@ -6,14 +6,11 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<Props> = ({
-
-                                          children,
-                                          styleType,
-                                          type,
-                                          onClick,
-                                        }) => {
+  children,
+  ...props
+}) => {
   return (
-      <button type={type} onClick={onClick} className={styles.button}>
+      <button className={styles.button} {...props}>
         {children}
       </button>
   );

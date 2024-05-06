@@ -4,6 +4,7 @@ import { supabase } from "../../api";
 import styles from "./styles.module.scss";
 import { Button } from "../../components/button";
 import { Modal } from "../../components/modal";
+import { Input } from "../../components/input";
 
 export const SignIn = () => {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -12,8 +13,7 @@ export const SignIn = () => {
   return (
     <Modal>
       <h1 className={styles.headerText}>Sign In</h1>
-      <label className={styles.signInLabel}>
-        <input
+      <Input
           type="text"
           className={cn("form-control", styles.usernameInput)}
           placeholder="username"
@@ -22,9 +22,8 @@ export const SignIn = () => {
             setUser({ ...user, username: e.target.value })
           }
         />
-      </label>
-      <label className={styles.signInLabel}>
-        <input
+
+      <Input
           type="password"
           className={cn("form-control", styles.passwordInput)}
           placeholder="password"
@@ -33,7 +32,7 @@ export const SignIn = () => {
             setUser({ ...user, password: e.target.value })
           }
         />
-      </label>
+        
       <Button type="button" onClick={login}>
         LOGIN
       </Button>
