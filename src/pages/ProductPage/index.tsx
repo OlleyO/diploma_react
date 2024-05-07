@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Button } from "../../components/button";
-import { Modal as MyModal } from "../../components/modal";
+import { Container } from "../../components/container";
 
 import styles from "./styles.module.scss";
 import { BuyModal } from "./buyModal";
@@ -20,7 +20,7 @@ export const ProductPage: React.FC = () => {
     <div className={styles.productPage}>
       <div className={styles.graphs}></div>
 
-      <MyModal className={styles.infoModal}>
+      <Container className={styles.infoModal}>
         <div className={styles.infoGroup}>
           <div className={styles.headerGroup}>
             <h2>{`${product.manufacturer_name} ${product.name}`}</h2>
@@ -53,7 +53,7 @@ export const ProductPage: React.FC = () => {
             Продати
           </Button>
         </div>
-      </MyModal>
+      </Container>
 
       <SellModal
         show={show.sell}
