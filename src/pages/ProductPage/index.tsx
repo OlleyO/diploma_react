@@ -1,47 +1,17 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { supabase } from "../../api";
 import { Button } from "../../components/button";
 import { Modal as MyModal } from "../../components/modal";
 
-import { Database } from "../../api/database.types";
 import styles from "./styles.module.scss";
 import { BuyModal } from "./buyModal";
-
-const fetchProductData = async (id: string) => {
-  const { data } = await supabase.from("Models").select().eq("id", id);
-
-  return data;
-};
-
-export async function loadProductData({ params }: any) {
-  const product = await fetchProductData(params.id);
-  return { product };
-}
+import { getItemsToSell, sellItems } from "../../api/req";
 
 export const ProductPage: React.FC = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
   const [loading, setLoading] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
-
-  async function getItemsToSell(modelId: string, count: number) {
-    return supabase.from("Items").select().eq("modelId", modelId).limit(count);
-  }
-
-  async function sellItems(
-    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][]
-  ) {
-    return Promise.all([
-      supabase.from("BuyItems").insert(payload),
-      supabase
-        .from("Items")
-        .delete({ count: "exact" })
-        .eq("modelId", product.id)
-        .limit(payload.length)
-        .order("id"),
-    ]);
-  }
 
   function handleSellClick() {
     const sellCount = Number(
@@ -61,7 +31,7 @@ export const ProductPage: React.FC = () => {
           created_at: new Date().toISOString(),
         }));
 
-        return sellItems(payload);
+        return sellItems(payload, product.id);
       })
       .then(() => {
         alert("Успішний продаж!");
