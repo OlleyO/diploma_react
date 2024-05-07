@@ -10,8 +10,10 @@ import { SellModal } from "./sellModal";
 export const ProductPage: React.FC = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
-  const [showBuyModal, setShowBuyModal] = useState(false);
-  const [showSellModal, setShowSellModal] = useState(false);
+  const [show, setShow] = useState({
+    sell: false,
+    buy: false,
+  });
   const [loading, setLoading] = useState(false);
 
   return (
@@ -38,22 +40,31 @@ export const ProductPage: React.FC = () => {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button disabled={loading} onClick={() => setShowBuyModal(true)}>
+          <Button
+            disabled={loading}
+            onClick={() => setShow((show) => ({ ...show, buy: false }))}
+          >
             Закупити
           </Button>
-          <Button disabled={loading} onClick={() => setShowSellModal(true)}>
+          <Button
+            disabled={loading}
+            onClick={() => setShow((show) => ({ ...show, sell: false }))}
+          >
             Продати
           </Button>
         </div>
       </MyModal>
 
       <SellModal
-        show={showSellModal}
-        onHide={() => setShowSellModal(false)}
+        show={show.sell}
+        onHide={() => setShow((show) => ({ ...show, sell: false }))}
         product={product}
         setLoading={setLoading}
       />
-      <BuyModal show={showBuyModal} onHide={() => setShowBuyModal(false)} />
+      <BuyModal
+        show={show.buy}
+        onHide={() => setShow((show) => ({ ...show, buy: false }))}
+      />
     </div>
   );
 };
