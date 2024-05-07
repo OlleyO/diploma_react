@@ -5,45 +5,17 @@ import { Modal as MyModal } from "../../components/modal";
 
 import styles from "./styles.module.scss";
 import { BuyModal } from "./buyModal";
-import { getItemsToSell, sellItems } from "../../api/req";
+import { SellModal } from "./sellModal";
 
 export const ProductPage: React.FC = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
-  const [loading, setLoading] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
-
-  function handleSellClick() {
-    const sellCount = Number(
-      window.prompt("Введіть к-сть товарів для продажу: ")
-    );
-
-    if (!sellCount) return;
-
-    setLoading(true);
-
-    return getItemsToSell(product.id, sellCount)
-      .then(({ data }) => {
-        if (!data?.length) return;
-
-        const payload = data.map((i) => ({
-          model_id: i.modelId,
-          created_at: new Date().toISOString(),
-        }));
-
-        return sellItems(payload, product.id);
-      })
-      .then(() => {
-        alert("Успішний продаж!");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
+  const [showSellModal, setShowSellModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className={styles.productPage}>
-      <BuyModal show={showBuyModal} onHide={() => setShowBuyModal(false)} />
       <div className={styles.graphs}></div>
 
       <MyModal className={styles.infoModal}>
@@ -69,11 +41,19 @@ export const ProductPage: React.FC = () => {
           <Button disabled={loading} onClick={() => setShowBuyModal(true)}>
             Закупити
           </Button>
-          <Button disabled={loading} onClick={handleSellClick}>
+          <Button disabled={loading} onClick={() => setShowSellModal(true)}>
             Продати
           </Button>
         </div>
       </MyModal>
+
+      <SellModal
+        show={showSellModal}
+        onHide={() => setShowSellModal(false)}
+        product={product}
+        setLoading={setLoading}
+      />
+      <BuyModal show={showBuyModal} onHide={() => setShowBuyModal(false)} />
     </div>
   );
 };
