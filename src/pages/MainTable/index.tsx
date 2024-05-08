@@ -25,8 +25,6 @@ export async function loadFilterData({ params }: any) {
 export const MainTable = () => {
   const filteredProducts = useLoaderData() as any;
 
-  console.log(filteredProducts);
-
   return (
     <div className={cn("container")}>
       <table className={cn("table table-hover", styles.mainTable)}>

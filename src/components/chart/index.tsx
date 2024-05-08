@@ -9,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import dayjs from "dayjs";
 
 ChartJS.register(
   CategoryScale,
@@ -19,7 +20,15 @@ ChartJS.register(
   Legend
 );
 export const options = {
+  barPercentage: 1,
   responsive: true,
+  scales: {
+    y: {
+      ticks: {
+        precision: 0,
+      },
+    },
+  },
   plugins: {
     legend: {
       position: "top" as const,
@@ -31,37 +40,97 @@ export const options = {
   },
 };
 
-const labels = [
-  "Січень",
-  "Лютий",
-  "Березень",
-  "Квітень",
-  "Травень",
-  "Червень",
-  "Липень",
-  "Серпень",
-  "Вересень",
-  "Жовтень",
-  "Листопад",
-  "Грудень",
-];
+interface LabelsType {
+  [name: string]: string;
+}
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Закуплено",
-      data: [10, 20, 30],
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-    {
-      label: "Продано",
-      data: [40, 50, 60],
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-    },
-  ],
+interface ResultType {
+  sell: { [name: string]: number };
+  buy: { [name: string]: number };
+}
+
+interface ChartResultType {
+  sell: number[];
+  buy: number[];
+}
+
+const labels: LabelsType = {
+  "1": "Січень",
+  "2": "Лютий",
+  "3": "Березень",
+  "4": "Квітень",
+  "5": "Травень",
+  "6": "Червень",
+  "7": "Липень",
+  "8": "Серпень",
+  "9": "Вересень",
+  "10": "Жовтень",
+  "11": "Листопад",
+  "12": "Грудень",
 };
 
-export const Chart = () => {
-  return <Bar options={options} data={data} />;
+interface Props {
+  data: {
+    sell: any[];
+    buy: any[];
+  };
+}
+
+export const Chart: React.FC<Props> = ({ data }) => {
+  const result: ResultType = { sell: {}, buy: {} };
+
+  const buy = data.buy
+    .filter(
+      (item) =>
+        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY")
+    )
+    .map(
+      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string
+    )
+    .forEach((month) => {
+      result.buy[month] = (result.buy[month] || 0) + 1;
+    });
+
+  const sell = data.sell
+    .filter(
+      (item) =>
+        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY")
+    )
+    .map(
+      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string
+    )
+    .forEach((month) => {
+      result.sell[month] = (result.sell[month] || 0) + 1;
+    });
+
+  const resultCharData: ChartResultType = {
+    sell: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    buy: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  };
+
+  Object.keys(result.buy).forEach(
+    (data) => (resultCharData.buy[+data] = result.buy[data])
+  );
+
+  Object.keys(result.sell).forEach(
+    (data) => (resultCharData.sell[+data] = result.sell[data])
+  );
+
+  const mappeData = {
+    labels: Object.values(labels),
+    datasets: [
+      {
+        label: "Закуплено",
+        data: resultCharData.buy,
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Продано",
+        data: resultCharData.sell,
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+
+  return <Bar options={options} data={mappeData} />;
 };

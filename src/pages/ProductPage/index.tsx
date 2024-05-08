@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { supabase } from "../../api";
 import Button from "react-bootstrap/Button";
@@ -7,10 +7,25 @@ import styles from "./styles.module.scss";
 import { Database } from "../../api/database.types";
 import { Chart } from "../../components/chart";
 
-const fetchProductData = async (id: string) => {
-  const { data } = await supabase.from("Models").select().eq("id", id);
+const getGraphInfo = async (
+  modelId: string,
+  type: "BuyItems" | "SellItems"
+) => {
+  const { data } = await supabase.from(type).select().eq("model_id", modelId);
 
   return data;
+};
+
+const fetchProductData = async (id: string) => {
+  const { data } = await supabase.from("Models").select().eq("id", id);
+  const sell = await getGraphInfo(id, "SellItems");
+  const buy = await getGraphInfo(id, "BuyItems");
+
+  return {
+    ...data,
+    sell: sell,
+    buy: buy,
+  };
 };
 
 export async function loadProductData({ params }: any) {
@@ -20,7 +35,12 @@ export async function loadProductData({ params }: any) {
 
 export const ProductPage = () => {
   const productFetchData: any = useLoaderData();
-  const product = productFetchData.product[0];
+  const product = {
+    ...productFetchData.product[0],
+    sell: productFetchData.product.sell,
+    buy: productFetchData.product.buy,
+  };
+
   const [loading, setLoading] = useState(false);
 
   async function getItemsToSell(modelId: string, count: number) {
@@ -101,7 +121,7 @@ export const ProductPage = () => {
         </div>
       </Modal>
       <Modal>
-        <Chart />
+        <Chart data={{ sell: product.sell, buy: product.buy }} />
       </Modal>
     </div>
   );
