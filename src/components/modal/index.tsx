@@ -7,9 +7,5 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Modal: React.FC<Props> = ({ children, show, className }) => {
-  return (
-    <div className={styles.modalContainer}>
-      <div className={cn(styles.modal, className)}>{children}</div>
-    </div>
-  );
+  return <div className={cn(styles.modal, className)}>{children}</div>;
 };

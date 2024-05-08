@@ -5,6 +5,8 @@ import Button from "react-bootstrap/Button";
 import { Modal } from "../../components/modal";
 import styles from "./styles.module.scss";
 import { Database } from "../../api/database.types";
+import { Chart } from "../../components/chart";
+
 const fetchProductData = async (id: string) => {
   const { data } = await supabase.from("Models").select().eq("id", id);
 
@@ -26,7 +28,7 @@ export const ProductPage = () => {
   }
 
   async function sellItems(
-    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][],
+    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][]
   ) {
     // TODO: Use trigger to delete items from Items table
     return Promise.all([
@@ -42,7 +44,7 @@ export const ProductPage = () => {
 
   function handleSellClick() {
     const sellCount = Number(
-      window.prompt("Введіть к-сть товарів для продажу: "),
+      window.prompt("Введіть к-сть товарів для продажу: ")
     );
 
     if (!sellCount) return;
@@ -97,6 +99,9 @@ export const ProductPage = () => {
             Продати
           </Button>
         </div>
+      </Modal>
+      <Modal>
+        <Chart />
       </Modal>
     </div>
   );
