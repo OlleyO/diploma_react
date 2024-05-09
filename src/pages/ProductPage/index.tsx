@@ -1,78 +1,26 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { supabase } from "../../api";
-import Button from "react-bootstrap/Button";
-import { Modal } from "../../components/modal";
+import { Button } from "../../components/button";
+import { Container } from "../../components/container";
+
 import styles from "./styles.module.scss";
-import { Database } from "../../api/database.types";
-const fetchProductData = async (id: string) => {
-  const { data } = await supabase.from("Models").select().eq("id", id);
+import { BuyModal } from "./buyModal";
+import { SellModal } from "./sellModal";
 
-  return data;
-};
-
-export async function loadProductData({ params }: any) {
-  const product = await fetchProductData(params.id);
-  return { product };
-}
-
-export const ProductPage = () => {
+export const ProductPage: React.FC = () => {
   const productFetchData: any = useLoaderData();
   const product = productFetchData.product[0];
+  const [show, setShow] = useState({
+    sell: false,
+    buy: false,
+  });
   const [loading, setLoading] = useState(false);
-
-  async function getItemsToSell(modelId: string, count: number) {
-    return supabase.from("Items").select().eq("modelId", modelId).limit(count);
-  }
-
-  async function sellItems(
-    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][],
-  ) {
-    // TODO: Use trigger to delete items from Items table
-    return Promise.all([
-      supabase.from("BuyItems").insert(payload),
-      supabase
-        .from("Items")
-        .delete({ count: "exact" })
-        .eq("modelId", product.id)
-        .limit(payload.length)
-        .order("id"),
-    ]);
-  }
-
-  function handleSellClick() {
-    const sellCount = Number(
-      window.prompt("Введіть к-сть товарів для продажу: "),
-    );
-
-    if (!sellCount) return;
-
-    setLoading(true);
-
-    return getItemsToSell(product.id, sellCount)
-      .then(({ data }) => {
-        if (!data?.length) return;
-
-        const payload = data.map((i) => ({
-          model_id: i.modelId,
-          created_at: new Date().toISOString(),
-        }));
-
-        return sellItems(payload);
-      })
-      .then(() => {
-        alert("Success Loading");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
 
   return (
     <div className={styles.productPage}>
       <div className={styles.graphs}></div>
 
-      <Modal className={styles.infoModal}>
+      <Container className={styles.infoModal}>
         <div className={styles.infoGroup}>
           <div className={styles.headerGroup}>
             <h2>{`${product.manufacturer_name} ${product.name}`}</h2>
@@ -92,12 +40,31 @@ export const ProductPage = () => {
         </div>
 
         <div className={styles.buttonGroup}>
-          <Button disabled={loading}>Закупити</Button>
-          <Button disabled={loading} onClick={handleSellClick}>
+          <Button
+            disabled={loading}
+            onClick={() => setShow((show) => ({ sell: false, buy: true }))}
+          >
+            Закупити
+          </Button>
+          <Button
+            disabled={loading}
+            onClick={() => setShow((show) => ({ buy: false, sell: true }))}
+          >
             Продати
           </Button>
         </div>
-      </Modal>
+      </Container>
+
+      <SellModal
+        show={show.sell}
+        onHide={() => setShow((show) => ({ ...show, sell: false }))}
+        product={product}
+        setLoading={setLoading}
+      />
+      <BuyModal
+        show={show.buy}
+        onHide={() => setShow((show) => ({ ...show, buy: false }))}
+      />
     </div>
   );
 };
