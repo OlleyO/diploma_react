@@ -4,24 +4,27 @@ import styles from "./styles.module.scss";
 import { Button } from "@/components/button";
 import { Container } from "@/components/container";
 import { Input } from "@/components/input";
-import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/api";
 import { createNotification } from "@/helpers";
+import { Link, useNavigate } from "react-router-dom";
 
-export const SignIn = () => {
+export const SignUp = () => {
   const navigate = useNavigate();
+
   const [user, setUser] = useState({ email: "", password: "" });
+  async function signUpNewUser() {
+    const response = await supabase.auth.signUp({
+      ...user,
+    });
 
-  async function loginUser() {
-    const res = await supabase.auth.signInWithPassword(user);
-
-    return res;
+    return response;
   }
+
   function handleSubmit() {
-    return loginUser()
+    return signUpNewUser()
       .then(() => {
         createNotification("success", {
-          title: "Успішно авторизовано",
+          title: "Успішна реєстрація",
           message: "",
         });
 
@@ -32,7 +35,7 @@ export const SignIn = () => {
 
   return (
     <Container>
-      <h1 className={styles.headerText}>Авторизація</h1>
+      <h1 className={styles.headerText}>Реєстрація</h1>
       <Input
         type="text"
         className={cn("form-control", styles.usernameInput)}
@@ -53,12 +56,12 @@ export const SignIn = () => {
         }
       />
 
-      <Link className={styles.link} to={"/auth/signUp"}>
-        Ще не зареєстровані? Зареєструватись
+      <Link className={styles.link} to={"/auth/login"}>
+        Вже зареєстровані? Увійти
       </Link>
 
       <Button type="button" onClick={handleSubmit}>
-        Увійти
+        Зареєструватись
       </Button>
     </Container>
   );
