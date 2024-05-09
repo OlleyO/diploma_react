@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { Input } from "../../components/input";
-import { Button } from "../../components/button";
-import { getItemsToSell, sellItems } from "../../api/req";
+import { Input } from "@/components/input";
+import { Button } from "@/components/button";
+import { getItemsToSell, sellItems } from "@/api/req";
 
 import styles from "./styles.module.scss";
-import { buyProducts, getStorages } from "../../api/req";
-import { createNotification } from "../../helpers";
+import { createNotification } from "@/helpers";
 
 interface Props {
   show: boolean;
