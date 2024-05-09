@@ -10,6 +10,7 @@ import styles from "./styles.module.scss";
 import { buyProducts, getProviders, getStorages } from "../../api/req";
 import { Database } from "../../api/database.types";
 import { useParams } from "react-router-dom";
+import { createNotification } from "../../helpers/notifications";
 
 interface Props {
   show: boolean;
@@ -45,7 +46,15 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
       };
     });
 
-    buyProducts(payload).finally(onHide);
+    buyProducts(payload)
+      .then(
+        createNotification("success", {
+          title: "Закупка успішна",
+          message: "",
+        }),
+      )
+      .catch((err) => createNotification("error"))
+      .finally(onHide);
   }
 
   useEffect(() => {
