@@ -1,15 +1,48 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import { supabase } from "../../api";
 import { Button } from "@/components/button";
-import { Container } from "@/components/container";
-
 import styles from "./styles.module.scss";
 import { BuyModal } from "./buyModal";
 import { SellModal } from "./sellModal";
+import { Chart } from "@/components/chart";
+import { Container } from "@/components/container";
+const getGraphInfo = async (
+  modelId: string,
+  type: "BuyItems" | "SellItems",
+) => {
+  const { data } = await supabase.from(type).select().eq("model_id", modelId);
 
-export const ProductPage: React.FC = () => {
+  return data;
+};
+
+const fetchProductData = async (id: string) => {
+  const { data } = await supabase.from("Models").select().eq("id", id);
+  const sell = await getGraphInfo(id, "BuyItems");
+  const buy = await getGraphInfo(id, "SellItems");
+
+  return {
+    ...data,
+    sell: sell,
+    buy: buy,
+  };
+};
+
+export async function loadProductData({ params }: any) {
+  const product = await fetchProductData(params.id);
+  return { product };
+}
+
+export const ProductPage = () => {
   const productFetchData: any = useLoaderData();
-  const product = productFetchData.product[0];
+  const product = {
+    ...productFetchData.product[0],
+    sell: productFetchData.product.sell || [],
+    buy: productFetchData.product.buy || [],
+  };
+
+  console.log(product);
+
   const [show, setShow] = useState({
     sell: false,
     buy: false,
@@ -55,15 +88,20 @@ export const ProductPage: React.FC = () => {
         </div>
       </Container>
 
+      <Container>
+        <Chart data={{ sell: product.sell, buy: product.buy }} />
+      </Container>
+
       <SellModal
         show={show.sell}
         onHide={() => setShow((show) => ({ ...show, sell: false }))}
         product={product}
         setLoading={setLoading}
       />
+
       <BuyModal
-        show={show.buy}
         onHide={() => setShow((show) => ({ ...show, buy: false }))}
+        show={show.buy}
       />
     </div>
   );

@@ -55,7 +55,12 @@ export const getStorages = async () => {
 };
 
 export const buyProducts = async (data: any) => {
-  await supabase.from("Items").insert(data);
+  return Promise.all([
+    supabase.from("Items").insert(data),
+    supabase
+      .from("SellItems")
+      .insert(data.map(({ modelId: model_id }: any) => ({ model_id }))),
+  ]);
 };
 
 export const getProviders = async () => {

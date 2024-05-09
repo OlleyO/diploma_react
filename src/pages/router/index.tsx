@@ -1,7 +1,7 @@
-import { createBrowserRouter, Outlet } from "react-router-dom";
-import { ProductPage } from "../ProductPage";
+import { createBrowserRouter } from "react-router-dom";
+import { ProductPage, loadProductData } from "../ProductPage";
 import { MainApp } from "../main";
-import { loadFilterData, loadProductData } from "@/api/req";
+import { loadFilterData } from "@/api/req";
 import { SignIn } from "@/pages/auth/sign-in";
 import { SignUp } from "@/pages/auth/sign-up";
 import { AuthProvider } from "@/helpers/authProvide";

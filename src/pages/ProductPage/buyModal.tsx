@@ -9,7 +9,7 @@ import cn from "classnames";
 import styles from "./styles.module.scss";
 import { buyProducts, getProviders, getStorages } from "@/api/req";
 import { Database } from "@/api/database.types";
-import { useParams } from "react-router-dom";
+import { useParams, useRevalidator } from "react-router-dom";
 
 interface Props {
   show: boolean;
@@ -23,6 +23,7 @@ interface Data {
 }
 
 export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
+  const revalidator = useRevalidator();
   const { id: modelId } = useParams();
   const [storages, setStorages] = useState<Data[] | null>(null);
   const [providers, setProviders] = useState<
@@ -46,12 +47,13 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
     });
 
     buyProducts(payload)
-      .then(
+      .then(() => {
         createNotification("success", {
           title: "Закупка успішна",
           message: "",
-        }),
-      )
+        });
+        revalidator.revalidate();
+      })
       .catch((err) => createNotification("error"))
       .finally(onHide);
   }
@@ -98,7 +100,7 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
               key={item.id}
               onClick={() => setActiveStorage(item.id)}
             >
-              <img src={`.${toPicture("storage")}`} />
+              <img src={`${toPicture("storage")}`} />
               <p>{item.location}</p>
             </div>
           ))}

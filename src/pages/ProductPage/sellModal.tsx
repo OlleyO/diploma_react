@@ -6,6 +6,7 @@ import { getItemsToSell, sellItems } from "@/api/req";
 
 import styles from "./styles.module.scss";
 import { createNotification } from "@/helpers";
+import { useRevalidator } from "react-router-dom";
 
 interface Props {
   show: boolean;
@@ -20,6 +21,7 @@ export const SellModal: React.FC<Props> = ({
   product,
   setLoading,
 }) => {
+  const revalidator = useRevalidator();
   const [sellCount, setSetCount] = useState<string>("");
 
   const handleSellClick = () => {
@@ -33,7 +35,6 @@ export const SellModal: React.FC<Props> = ({
 
         const payload = data.map((i) => ({
           model_id: i.modelId,
-          created_at: new Date().toISOString(),
         }));
 
         return sellItems(payload, product.id);
@@ -43,6 +44,7 @@ export const SellModal: React.FC<Props> = ({
           title: "Успішно продано",
           message: "",
         });
+        revalidator.revalidate();
       })
       .catch((err) => createNotification("error"))
       .finally(() => {
