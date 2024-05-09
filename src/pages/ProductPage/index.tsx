@@ -42,13 +42,13 @@ export const ProductPage: React.FC = () => {
         <div className={styles.buttonGroup}>
           <Button
             disabled={loading}
-            onClick={() => setShow((show) => ({ ...show, buy: false }))}
+            onClick={() => setShow((show) => ({ sell: false, buy: true }))}
           >
             Закупити
           </Button>
           <Button
             disabled={loading}
-            onClick={() => setShow((show) => ({ ...show, sell: false }))}
+            onClick={() => setShow((show) => ({ buy: false, sell: true }))}
           >
             Продати
           </Button>

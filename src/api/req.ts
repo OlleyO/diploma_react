@@ -24,7 +24,7 @@ export const getItemsToSell = async (modelId: string, count: number) => {
 
 export const sellItems = async (
   payload: Database["public"]["Tables"]["BuyItems"]["Insert"][],
-  id: string
+  id: string,
 ) => {
   return Promise.all([
     supabase.from("BuyItems").insert(payload),
@@ -56,4 +56,10 @@ export const getStorages = async () => {
 
 export const buyProducts = async (data: any) => {
   await supabase.from("Items").insert(data);
+};
+
+export const getProviders = async () => {
+  const { data } = await supabase.from("Providers").select();
+
+  return data;
 };
