@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRevalidator } from "react-router-dom";
 import { supabase } from "../../api";
 import Button from "react-bootstrap/Button";
 import { Modal } from "../../components/modal";
@@ -9,7 +9,7 @@ import { Chart } from "../../components/chart";
 
 const getGraphInfo = async (
   modelId: string,
-  type: "BuyItems" | "SellItems"
+  type: "BuyItems" | "SellItems",
 ) => {
   const { data } = await supabase.from(type).select().eq("model_id", modelId);
 
@@ -34,6 +34,7 @@ export async function loadProductData({ params }: any) {
 }
 
 export const ProductPage = () => {
+  const revalidator = useRevalidator();
   const productFetchData: any = useLoaderData();
   const product = {
     ...productFetchData.product[0],
@@ -48,7 +49,7 @@ export const ProductPage = () => {
   }
 
   async function sellItems(
-    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][]
+    payload: Database["public"]["Tables"]["BuyItems"]["Insert"][],
   ) {
     // TODO: Use trigger to delete items from Items table
     return Promise.all([
@@ -64,7 +65,7 @@ export const ProductPage = () => {
 
   function handleSellClick() {
     const sellCount = Number(
-      window.prompt("Введіть к-сть товарів для продажу: ")
+      window.prompt("Введіть к-сть товарів для продажу: "),
     );
 
     if (!sellCount) return;
@@ -84,6 +85,9 @@ export const ProductPage = () => {
       })
       .then(() => {
         alert("Success Loading");
+      })
+      .then(() => {
+        revalidator.revalidate();
       })
       .finally(() => {
         setLoading(false);
