@@ -1,7 +1,7 @@
 import cn from "classnames";
 import { Link, useLoaderData } from "react-router-dom";
-import { Button } from "../../components/button";
-import { toPicture } from "../../helpers/pictures";
+import { Button } from "@/components/button";
+import { toPicture } from "@/helpers";
 import styles from "./styles.module.scss";
 
 export const MainTable: React.FC = () => {

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ProductPage } from "../ProductPage";
 import { MainApp } from "../main";
-import { loadFilterData, loadProductData } from "../../api/req";
+import { loadFilterData, loadProductData } from "@/api/req";
 
 const router = createBrowserRouter([
   {

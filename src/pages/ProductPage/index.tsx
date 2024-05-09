@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { Button } from "../../components/button";
-import { Container } from "../../components/container";
+import { Button } from "@/components/button";
+import { Container } from "@/components/container";
 
 import styles from "./styles.module.scss";
 import { BuyModal } from "./buyModal";

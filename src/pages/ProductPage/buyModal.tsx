@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import { Input } from "../../components/input";
-import { Button } from "../../components/button";
-import { toPicture } from "../../helpers/pictures";
+import { Input } from "@/components/input";
+import { Button } from "@/components/button";
+import { toPicture, createNotification } from "@/helpers";
 import cn from "classnames";
 
 import styles from "./styles.module.scss";
-import { buyProducts, getProviders, getStorages } from "../../api/req";
-import { Database } from "../../api/database.types";
+import { buyProducts, getProviders, getStorages } from "@/api/req";
+import { Database } from "@/api/database.types";
 import { useParams } from "react-router-dom";
-import { createNotification } from "../../helpers/notifications";
 
 interface Props {
   show: boolean;

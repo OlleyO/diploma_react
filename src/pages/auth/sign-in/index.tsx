@@ -1,10 +1,9 @@
 import React, { BaseSyntheticEvent, useState } from "react";
 import cn from "classnames";
-import { supabase } from "../../api";
 import styles from "./styles.module.scss";
-import { Button } from "../../components/button";
-import { Container } from "../../components/container";
-import { Input } from "../../components/input";
+import { Button } from "@/components/button";
+import { Container } from "@/components/container";
+import { Input } from "@/components/input";
 
 export const SignIn = () => {
   const [user, setUser] = useState({ username: "", password: "" });
