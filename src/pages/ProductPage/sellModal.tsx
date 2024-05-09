@@ -6,6 +6,7 @@ import { getItemsToSell, sellItems } from "../../api/req";
 
 import styles from "./styles.module.scss";
 import { buyProducts, getStorages } from "../../api/req";
+import { createNotification } from "../../helpers";
 
 interface Props {
   show: boolean;
@@ -39,8 +40,12 @@ export const SellModal: React.FC<Props> = ({
         return sellItems(payload, product.id);
       })
       .then(() => {
-        alert("Успішний продаж!");
+        createNotification("success", {
+          title: "Успішно продано",
+          message: "",
+        });
       })
+      .catch((err) => createNotification("error"))
       .finally(() => {
         setLoading(false);
       });
