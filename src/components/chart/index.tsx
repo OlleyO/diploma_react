@@ -17,7 +17,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 export const options = {
   barPercentage: 1,
@@ -79,25 +79,25 @@ interface Props {
 export const Chart: React.FC<Props> = ({ data }) => {
   const result: ResultType = { sell: {}, buy: {} };
 
-  const buy = data.buy
+  data.buy
     .filter(
       (item) =>
-        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY")
+        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY"),
     )
     .map(
-      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string
+      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string,
     )
     .forEach((month) => {
       result.buy[month] = (result.buy[month] || 0) + 1;
     });
 
-  const sell = data.sell
+  data.sell
     .filter(
       (item) =>
-        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY")
+        +dayjs().format("YYYY") === +dayjs(item.created_at).format("YYYY"),
     )
     .map(
-      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string
+      (item) => (+dayjs(item.created_at).format("M") - 1) as unknown as string,
     )
     .forEach((month) => {
       result.sell[month] = (result.sell[month] || 0) + 1;
@@ -109,11 +109,11 @@ export const Chart: React.FC<Props> = ({ data }) => {
   };
 
   Object.keys(result.buy).forEach(
-    (data) => (resultCharData.buy[+data] = result.buy[data])
+    (data) => (resultCharData.buy[+data] = result.buy[data]),
   );
 
   Object.keys(result.sell).forEach(
-    (data) => (resultCharData.sell[+data] = result.sell[data])
+    (data) => (resultCharData.sell[+data] = result.sell[data]),
   );
 
   const mappeData = {

@@ -1,23 +1,45 @@
 import { createBrowserRouter } from "react-router-dom";
 import { ProductPage, loadProductData } from "../ProductPage";
 import { MainApp } from "../main";
-import { loadFilterData } from "../MainTable";
+import { loadFilterData } from "@/api/req";
+import { SignIn } from "@/pages/auth/sign-in";
+import { SignUp } from "@/pages/auth/sign-up";
+import { AuthProvider } from "@/helpers/authProvide";
+import { DefaultLayout } from "@/components/layouts";
 
 const router = createBrowserRouter([
   {
+    element: <AuthProvider />,
     path: "/",
-    element: <MainApp />,
-    loader: (params) => loadFilterData(params),
-  },
-  {
-    path: "/:name",
-    element: <MainApp />,
-    loader: (params) => loadFilterData(params),
-  },
-  {
-    path: "/product/:id",
-    element: <ProductPage />,
-    loader: (params) => loadProductData(params),
+    children: [
+      {
+        element: <DefaultLayout />,
+        children: [
+          {
+            path: "items",
+            children: [
+              {
+                element: <MainApp />,
+                path: ":name",
+                loader: (params) => loadFilterData(params),
+              },
+            ],
+          },
+          {
+            path: "product/:id",
+            element: <ProductPage />,
+            loader: (params) => loadProductData(params),
+          },
+        ],
+      },
+      {
+        path: "auth",
+        children: [
+          { path: "login", element: <SignIn /> },
+          { path: "signUp", element: <SignUp /> },
+        ],
+      },
+    ],
   },
 ]);
 

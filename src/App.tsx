@@ -1,22 +1,18 @@
 import React from "react";
 import { RouterProvider } from "react-router-dom";
-
-import { AuthProvide } from "./helpers/authProvide";
-
+// @ts-ignore
+import { NotificationContainer } from "react-notifications";
 
 import "./App.css";
 import router from "./pages/router";
-import { Header } from "./components/header";
 
 function App() {
-    return (
-        <div className="App">
-            <AuthProvide>
-                <Header />
-                <RouterProvider router={router} />
-            </AuthProvide>
-        </div>
-    );
+  return (
+    <div className="App">
+      <NotificationContainer />
+      <RouterProvider router={router} />
+    </div>
+  );
 }
 
 export default App;

@@ -1,28 +1,10 @@
 import cn from "classnames";
 import { Link, useLoaderData } from "react-router-dom";
-import { supabase } from "../../api";
-import { Button } from "../../components/button";
-import { toPicture } from "../../helpers/pictures";
+import { Button } from "@/components/button";
+import { toPicture } from "@/helpers";
 import styles from "./styles.module.scss";
 
-async function fetchFilterData(name: string) {
-  let query = supabase.from("Models").select("*, Types(name), Items(count)");
-
-  if (name) {
-    query = query.filter("Types.name", "eq", name);
-  }
-
-  const { data } = await query;
-
-  // TODO: Refactor this line
-  return data?.filter((i) => i.Types);
-}
-
-export async function loadFilterData({ params }: any) {
-  return fetchFilterData(params.name);
-}
-
-export const MainTable = () => {
+export const MainTable: React.FC = () => {
   const filteredProducts = useLoaderData() as any;
 
   return (
