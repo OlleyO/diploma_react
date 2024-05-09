@@ -1,6 +1,9 @@
 import React from "react";
 import { toPicture } from "@/helpers";
 import styles from "./styles.module.scss";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/button";
+import { supabase } from "@/api";
 
 export const Header: React.FC = () => {
   return (
@@ -9,21 +12,25 @@ export const Header: React.FC = () => {
       <nav>
         <ul>
           <li>
-            <a href="/">All</a>
+            <Link to="/items/all">All</Link>
           </li>
           <li>
-            <a href="/smartphones">Phones</a>
+            <Link to="/items/smartphones">Phones</Link>
           </li>
           <li>
-            <a href="/laptops">Laptops</a>
+            <Link to="/items/laptops">Laptops</Link>
           </li>
           <li>
-            <a href="/accessories">Accessories</a>
+            <Link to="/items/accessories">Accessories</Link>
           </li>
           <li>
-            <div className={styles.user}>
-              <img src={`.${toPicture("user")}`} alt="user" />
-            </div>
+            <Button
+              onClick={() => {
+                supabase.auth.signOut();
+              }}
+            >
+              Вийти
+            </Button>
           </li>
         </ul>
       </nav>

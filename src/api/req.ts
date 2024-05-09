@@ -4,7 +4,7 @@ import { Database } from "./database.types";
 export const fetchFilterData = async (name: string) => {
   let query = supabase.from("Models").select("*, Types(name), Items(count)");
 
-  if (name) {
+  if (name !== "all") {
     query = query.filter("Types.name", "eq", name);
   }
 
