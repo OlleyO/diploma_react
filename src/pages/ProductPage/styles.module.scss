@@ -1,6 +1,8 @@
 .productPage {
-  min-height: 70%;
+  height: 100%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 30px;
   padding: 15px 100px;
 }
@@ -10,13 +12,12 @@
 }
 
 .infoModal {
-  width: 80vw;
   max-width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: justify;
-  min-height: 60vh;
+  height: 60vh;
 
   .headerGroup {
     width: 100%;
@@ -46,6 +47,7 @@
 
   p {
     font-size: 14px;
+    text-align: justify;
   }
 }
 

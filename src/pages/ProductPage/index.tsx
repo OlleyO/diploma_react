@@ -9,7 +9,7 @@ import { Chart } from "@/components/chart";
 import { Container } from "@/components/container";
 const getGraphInfo = async (
   modelId: string,
-  type: "BuyItems" | "SellItems",
+  type: "BuyItems" | "SellItems"
 ) => {
   const { data } = await supabase.from(type).select().eq("model_id", modelId);
 
@@ -88,7 +88,7 @@ export const ProductPage = () => {
         </div>
       </Container>
 
-      <Container>
+      <Container className={styles.infoModal}>
         <Chart data={{ sell: product.sell, buy: product.buy }} />
       </Container>
 

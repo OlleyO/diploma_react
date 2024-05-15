@@ -42,9 +42,6 @@ export const MainTable: React.FC = () => {
                       <Button type="button">Деталі</Button>
                     </Link>
                   </td>
-                  <td>
-                    <Button type="button">Редагувати</Button>
-                  </td>
                 </tr>
               );
             })}
