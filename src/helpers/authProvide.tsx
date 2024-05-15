@@ -23,9 +23,13 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({
       }
 
       if (!_session && !location.pathname.includes("auth")) {
-        navigate("/auth/login", { replace: true });
+        return navigate("/auth/login", { replace: true });
       }
     });
+
+    if (location.pathname === "/") {
+      navigate("/items/all");
+    }
 
     return () => {
       subscription.data.subscription.unsubscribe();

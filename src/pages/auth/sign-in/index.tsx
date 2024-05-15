@@ -15,6 +15,10 @@ export const SignIn = () => {
   async function loginUser() {
     const res = await supabase.auth.signInWithPassword(user);
 
+    if (res.error) {
+      return Promise.reject(res.error);
+    }
+
     return res;
   }
   function handleSubmit() {
@@ -27,7 +31,7 @@ export const SignIn = () => {
 
         navigate("/items/all", { replace: true });
       })
-      .catch(createNotification);
+      .catch((err) => createNotification());
   }
 
   return (

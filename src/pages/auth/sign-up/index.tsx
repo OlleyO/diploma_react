@@ -17,6 +17,10 @@ export const SignUp = () => {
       ...user,
     });
 
+    if (response.error) {
+      return Promise.reject(response.error);
+    }
+
     return response;
   }
 
@@ -30,7 +34,7 @@ export const SignUp = () => {
 
         navigate("/items/all", { replace: true });
       })
-      .catch(createNotification);
+      .catch(() => createNotification());
   }
 
   return (
