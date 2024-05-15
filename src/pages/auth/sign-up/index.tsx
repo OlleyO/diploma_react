@@ -34,7 +34,7 @@ export const SignUp = () => {
   }
 
   return (
-    <Container>
+    <Container className={styles.loginModal} wrapperClassName={styles.wrapper}>
       <h1 className={styles.headerText}>Реєстрація</h1>
       <Input
         type="text"

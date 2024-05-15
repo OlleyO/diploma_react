@@ -31,7 +31,7 @@ export const SignIn = () => {
   }
 
   return (
-    <Container>
+    <Container className={styles.loginModal} wrapperClassName={styles.wrapper}>
       <h1 className={styles.headerText}>Авторизація</h1>
       <Input
         type="text"

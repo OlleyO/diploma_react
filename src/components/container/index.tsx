@@ -4,11 +4,17 @@ import styles from "./styles.module.scss";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   show?: boolean;
+  wrapperClassName?: string;
 }
 
-export const Container: React.FC<Props> = ({ children, show, className }) => {
+export const Container: React.FC<Props> = ({
+  children,
+  show,
+  className = "",
+  wrapperClassName = "",
+}) => {
   return (
-    <div className={styles.modalContainer}>
+    <div className={cn(styles.modalContainer, wrapperClassName)}>
       <div className={cn(styles.modal, className)}>{children}</div>
     </div>
   );
