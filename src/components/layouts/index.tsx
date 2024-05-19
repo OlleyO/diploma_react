@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { Header } from "@/components/header";
-import { redirect, useLocation } from "react-router-dom";
+import { AiChat } from "@/components/ai-chat/AiChat";
 
 export const DefaultLayout: React.FC = () => {
   return (
@@ -9,6 +9,8 @@ export const DefaultLayout: React.FC = () => {
       <Header />
 
       <Outlet />
+
+      <AiChat />
     </div>
   );
 };
