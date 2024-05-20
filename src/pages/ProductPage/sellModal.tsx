@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
@@ -8,6 +8,7 @@ import styles from "./styles.module.scss";
 import { createNotification } from "@/helpers";
 import { useRevalidator } from "react-router-dom";
 import { sendEmail } from "./email";
+import { supabase } from "@/api";
 
 interface Props {
   show: boolean;
@@ -24,11 +25,30 @@ export const SellModal: React.FC<Props> = ({
 }) => {
   const revalidator = useRevalidator();
   const [sellCount, setSetCount] = useState<string>("");
+  const [users, setUsers] = useState<any>();
+
+  const getAdmins = async () => {
+    const { data } = await supabase.from("profiles").select("*");
+
+    return data;
+  };
+
+  useEffect(() => {
+    getAdmins().then((data) => setUsers(data));
+  }, []);
 
   const handleSellClick = () => {
     if (!sellCount) return;
 
     setLoading(true);
+    users.map((i, idx) => {
+      return setTimeout(() => {
+        sendEmail({
+          text: `Продано: ${sellCount} товарів`,
+          email: i.email,
+        });
+      }, idx * 5000);
+    });
 
     return getItemsToSell(product.id, Number(sellCount))
       .then(({ data }) => {
@@ -44,10 +64,6 @@ export const SellModal: React.FC<Props> = ({
         createNotification("success", {
           title: "Успішно продано",
           message: "",
-        });
-        sendEmail({
-          text: `Продано: ${sellCount}`,
-          email: "olezio.olezio@gmail.com",
         });
         revalidator.revalidate();
       })

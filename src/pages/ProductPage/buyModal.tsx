@@ -59,18 +59,20 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
       };
     });
 
+    users.map((i, idx) => {
+      return setTimeout(() => {
+        sendEmail({
+          text: `Закуплено: ${sellCount} товарів`,
+          email: i.email,
+        });
+      }, idx * 5000);
+    });
+
     buyProducts(payload)
       .then(() => {
         createNotification("success", {
           title: "Закупка успішна",
           message: "",
-        });
-
-        users.forEah((i) => {
-          return sendEmail({
-            text: `Закупелно: ${req.count} товарів`,
-            email: i.email,
-          });
         });
 
         revalidator.revalidate();
