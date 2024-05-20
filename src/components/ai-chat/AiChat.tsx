@@ -72,7 +72,7 @@ export const AiChat: React.FC = () => {
   useEffect(() => {
     if (isLastMessagePersonal) {
       const replyKey = (Object.keys(
-        voiceRecognitionService.commandsConfig,
+        voiceRecognitionService.commandsConfig
       ).find((key) => lastMessage.message.toLowerCase().includes(key)) ||
         "error") as keyof typeof voiceRecognitionService.commandsConfig;
       const replyConfig = voiceRecognitionService.commandsConfig[replyKey];

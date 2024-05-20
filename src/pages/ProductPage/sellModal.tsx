@@ -7,6 +7,7 @@ import { getItemsToSell, sellItems } from "@/api/req";
 import styles from "./styles.module.scss";
 import { createNotification } from "@/helpers";
 import { useRevalidator } from "react-router-dom";
+import { sendEmail } from "./email";
 
 interface Props {
   show: boolean;
@@ -43,6 +44,10 @@ export const SellModal: React.FC<Props> = ({
         createNotification("success", {
           title: "Успішно продано",
           message: "",
+        });
+        sendEmail({
+          text: `Продано: ${sellCount}`,
+          email: "olezio.olezio@gmail.com",
         });
         revalidator.revalidate();
       })

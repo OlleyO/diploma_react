@@ -10,6 +10,8 @@ import styles from "./styles.module.scss";
 import { buyProducts, getProviders, getStorages } from "@/api/req";
 import { Database } from "@/api/database.types";
 import { useParams, useRevalidator } from "react-router-dom";
+import { sendEmail } from "./email";
+import { supabase } from "@/api";
 
 interface Props {
   show: boolean;
@@ -29,6 +31,17 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
   const [providers, setProviders] = useState<
     Database["public"]["Tables"]["Providers"]["Row"][]
   >([]);
+  const [users, setUsers] = useState<any>();
+
+  const getAdmins = async () => {
+    const { data } = await supabase.from("profiles").select("*");
+
+    return data;
+  };
+
+  useEffect(() => {
+    getAdmins().then((data) => setUsers(data));
+  }, []);
 
   const [activeStorage, setActiveStorage] = useState(storages?.[0]?.id || "");
   const [req, setReq] = useState({
@@ -52,10 +65,20 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
           title: "Закупка успішна",
           message: "",
         });
+
+        users.forEah((i) => {
+          return sendEmail({
+            text: `Закупелно: ${req.count} товарів`,
+            email: i.email,
+          });
+        });
+
         revalidator.revalidate();
       })
       .catch((err) => createNotification("error"))
-      .finally(onHide);
+      .finally(() => {
+        onHide();
+      });
   }
 
   useEffect(() => {

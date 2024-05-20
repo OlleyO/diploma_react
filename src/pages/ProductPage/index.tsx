@@ -41,8 +41,6 @@ export const ProductPage = () => {
     buy: productFetchData.product.buy || [],
   };
 
-  console.log(product);
-
   const [show, setShow] = useState({
     sell: false,
     buy: false,
