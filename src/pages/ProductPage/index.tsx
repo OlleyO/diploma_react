@@ -99,6 +99,7 @@ export const ProductPage = () => {
 
       <BuyModal
         onHide={() => setShow((show) => ({ ...show, buy: false }))}
+        product={product}
         show={show.buy}
       />
     </div>

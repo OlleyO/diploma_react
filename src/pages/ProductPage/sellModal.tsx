@@ -44,7 +44,10 @@ export const SellModal: React.FC<Props> = ({
     users.map((i, idx) => {
       return setTimeout(() => {
         sendEmail({
-          text: `Продано: ${sellCount} товарів`,
+          id: product.id,
+          name: `${product.manufacturer_name} ${product.name}`,
+          textTitle: "Продано товарів: ",
+          text: `${sellCount} шт`,
           email: i.email,
         });
       }, idx * 5000);

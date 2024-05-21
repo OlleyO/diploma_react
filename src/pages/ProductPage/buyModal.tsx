@@ -22,9 +22,10 @@ interface Data {
   createdAt: string;
   id: string;
   location: string;
+  product: any;
 }
 
-export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
+export const BuyModal: React.FC<Props> = ({ show, product, onHide }) => {
   const revalidator = useRevalidator();
   const { id: modelId } = useParams();
   const [storages, setStorages] = useState<Data[] | null>(null);
@@ -62,7 +63,10 @@ export const BuyModal: React.FC<Props> = ({ show, onHide }) => {
     users.map((i, idx) => {
       return setTimeout(() => {
         sendEmail({
-          text: `Закуплено: ${sellCount} товарів`,
+          id: product.id,
+          name: `${product.manufacturer_name} ${product.name}`,
+          textTitle: "Закуплено товарів: ",
+          text: `${req.count} шт`,
           email: i.email,
         });
       }, idx * 5000);
