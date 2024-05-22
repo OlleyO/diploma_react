@@ -28,3 +28,27 @@
     cursor: pointer;
   }
 }
+
+.filterButton {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0;
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    padding: 10px;
+    box-shadow:
+      0 0 20px 0 rgba(0, 0, 0, 0.2),
+      0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    background: hsl(0, 0%, 100%);
+
+    img {
+      width: 25px;
+    }
+  }
+}
